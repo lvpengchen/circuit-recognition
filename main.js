@@ -1,11 +1,11 @@
-var canvas = document.getElementById('canvas');
+var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
 
 var radius = 2;
 var dragging = false;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// canvas.width = window.innerWidth;
+// canvas.height = window.innerHeight;
 
 context.lineWidth = radius*2;
 
@@ -32,6 +32,6 @@ var disengage = function(){
 	context.beginPath();
 }
 
-canvas.addEventListener('mousedown', engage);
-canvas.addEventListener('mousemove', putPoint);
-canvas.addEventListener('mouseup', disengage);
+// canvas.addEventListener('mousedown', engage);
+// canvas.addEventListener('mousemove', putPoint);
+// canvas.addEventListener('mouseup', disengage);
