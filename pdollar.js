@@ -28,7 +28,7 @@ function Result(name, score) // constructor
 //
 // PDollarRecognizer class constants
 //
-var NumPointClouds = 2;
+var NumPointClouds = 4;
 var NumPoints = 32;
 var Origin = new Point(0, 0, 0);
 //
@@ -42,22 +42,64 @@ function PDollarRecognizer() // constructor
 
     this.PointClouds = new Array(NumPointClouds);
 
-    this.PointClouds[0] = new PointCloud("AND", new Array(
-        new Point(324,268,1),new Point(324,276,1),new Point(324,296,1),new Point(324,305,1),
-        new Point(324,268,2),new Point(330,268,2),new Point(345,268,2),new Point(353,271,2),new Point(358,275,2),new Point(361,282,2),new Point(361,286,2),new Point(360,292,2),new Point(358,295,2),new Point(356,298,2),new Point(352,302,2),new Point(347,304,2),new Point(343,305,2),new Point(337,305,2),new Point(330,305,2),new Point(324,305,2)
+    // this.PointClouds[0] = new PointCloud("AND", new Array(
+    //     new Point(499,291,1),new Point(499,237,1),new Point(499,366,1),new Point(499,400,1),
+    //     new Point(499,290,2),new Point(531,290,2),new Point(561,290,2),new Point(589,302,2),new Point(607,327,2),new Point(611,347,2),new Point(603,372,2),new Point(587,391,2),new Point(563,401,2),new Point(536,402,2),new Point(500,401,2)
+    //     // new Point(239,325,3),new Point(264,325,3),new Point(290,325,3),new Point(313,325,3),
+    //     // new Point(238,384,4),new Point(258,384,4),new Point(282,384,4),new Point(311,384,4),
+    //     // new Point(427,354,5),new Point(465,354,5),new Point(493,354,5)
+    // ));
+
+    this.PointClouds[0] = new PointCloud("OR", new Array(
+        new Point(493,320,1),new Point(500,334,1),new Point(506,349,1),new Point(510,373,1),new Point(509,390,1),new Point(504,407,1),new Point(498,422,1),new Point(491,432,1),
+        new Point(492,319,2),new Point(518,319,2),new Point(541,319,2),new Point(553,321,2),new Point(571,326,2),new Point(586,334,2),new Point(601,346,2),new Point(614,361,2),new Point(622,376,2),new Point(610,395,2),new Point(596,410,2),new Point(579,421,2),new Point(557,428,2),new Point(542,431,2),new Point(521,430,2),new Point(493,430,2)
+        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
+        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
+        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
     ));
 
-    this.PointClouds[1] = new PointCloud("OR", new Array(
-        new Point(319,464,1),new Point(322,468,1),new Point(324,473,1),new Point(324,480,1),new Point(324,489,1),new Point(323,493,1),new Point(321,498,1),new Point(319,501,1),
-        new Point(319,464,2),new Point(325,464,2),new Point(330,464,2),new Point(336,464,2),new Point(344,465,2),new Point(351,469,2),new Point(356,473,2),new Point(360,478,2),new Point(362,482,2),new Point(360,487,2),new Point(357,490,2),new Point(354,493,2),new Point(350,496,2),new Point(346,498,2),new Point(343,500,2),new Point(337,501,2),new Point(330,501,2),new Point(323,501,2)
+    // this.PointClouds[1] = new PointCloud("NOT", new Array(
+    //     new Point(323,600,1),new Point(323,619,1),new Point(323,639,1),
+    //     new Point(323,600,2),new Point(362,619,2),new Point(323,638,2),
+    //     new Point(363,619,3),new Point(365,622,3),new Point(367,623,3),new Point(370,622,3),new Point(371,620,3),new Point(370,617,3),new Point(367,616,3),new Point(364,617,3),new Point(363,619,3)
+    // ));
+
+    this.PointClouds[1] = new PointCloud("XOR", new Array(
+        new Point(472,318,1),new Point(482,332,1),new Point(486,346,1),new Point(492,362,1),new Point(493,374,1),new Point(490,393,1),new Point(485,411,1),new Point(473,431,1),
+        new Point(493,320,2),new Point(500,334,2),new Point(506,349,2),new Point(510,373,2),new Point(509,390,2),new Point(504,407,2),new Point(498,422,2),new Point(491,432,2),
+        new Point(492,319,3),new Point(518,319,3),new Point(541,319,3),new Point(553,321,3),new Point(571,326,3),new Point(586,334,3),new Point(601,346,3),new Point(614,361,3),new Point(622,376,3),new Point(610,395,3),new Point(596,410,3),new Point(579,421,3),new Point(557,428,3),new Point(542,431,3),new Point(521,430,3),new Point(493,430,3)
+        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
+        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
+        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
     ));
 
-    this.PointClouds[1] = new PointCloud("NOT", new Array(
-        new Point(323,600,1),new Point(323,619,1),new Point(323,639,1),
-        new Point(323,600,2),new Point(362,619,2),new Point(323,638,2),
-        new Point(363,619,3),new Point(365,622,3),new Point(367,623,3),new Point(370,622,3),new Point(371,620,3),new Point(370,617,3),new Point(367,616,3),new Point(364,617,3),new Point(363,619,3)
+    this.PointClouds[2] = new PointCloud("NOR", new Array(
+        new Point(493,320,1),new Point(500,334,1),new Point(506,349,1),new Point(510,373,1),new Point(509,390,1),new Point(504,407,1),new Point(498,422,1),new Point(491,432,1),
+        new Point(492,319,2),new Point(518,319,2),new Point(541,319,2),new Point(553,321,2),new Point(571,326,2),new Point(586,334,2),new Point(601,346,2),new Point(614,361,2),new Point(622,376,2),new Point(610,395,2),new Point(596,410,2),new Point(579,421,2),new Point(557,428,2),new Point(542,431,2),new Point(521,430,2),new Point(493,430,2),
+        new Point(635,363,3),new Point(625,368,3),new Point(622,379,3),new Point(631,385,3),new Point(635,387,3),new Point(645,382,3),new Point(648,375,3),new Point(641,365,3),new Point(635,363,3)
+        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
+        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
+        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
     ));
+    
+    // this.PointClouds[1] = new PointCloud("NAND", new Array(
+    //     new Point(499,291,1),new Point(499,237,1),new Point(499,366,1),new Point(499,400,1),
+    //     new Point(499,290,2),new Point(531,290,2),new Point(561,290,2),new Point(589,302,2),new Point(607,327,2),new Point(611,347,2),new Point(603,372,2),new Point(587,391,2),new Point(563,401,2),new Point(536,402,2),new Point(500,401,2),
+    //     new Point(628,334,3),new Point(617,340,3),new Point(616,348,3),new Point(623,357,3),new Point(636,356,3),new Point(642,346,3),new Point(635,336,3),new Point(629,334,3)
+    //     // new Point(421,315,4),new Point(455,315,4),new Point(493,315,4),
+    //     // new Point(423,376,5),new Point(456,376,5),new Point(495,376,5),
+    //     // new Point(645,346,6),new Point(680,346,6)
+    // ));
 
+    this.PointClouds[3] = new PointCloud("XNOR", new Array(
+        new Point(472,318,1),new Point(482,332,1),new Point(486,346,1),new Point(492,362,1),new Point(493,374,1),new Point(490,393,1),new Point(485,411,1),new Point(473,431,1),
+        new Point(493,320,2),new Point(500,334,2),new Point(506,349,2),new Point(510,373,2),new Point(509,390,2),new Point(504,407,2),new Point(498,422,2),new Point(491,432,2),
+        new Point(492,319,3),new Point(518,319,3),new Point(541,319,3),new Point(553,321,3),new Point(571,326,3),new Point(586,334,3),new Point(601,346,3),new Point(614,361,3),new Point(622,376,3),new Point(610,395,3),new Point(596,410,3),new Point(579,421,3),new Point(557,428,3),new Point(542,431,3),new Point(521,430,3),new Point(493,430,3),
+        new Point(635,363,4),new Point(625,368,4),new Point(622,379,4),new Point(631,385,4),new Point(635,387,4),new Point(645,382,4),new Point(648,375,4),new Point(641,365,4),new Point(635,363,4)
+        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
+        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
+        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
+    ));
 
 
     // this.PointClouds = new Array(NumPointClouds);
