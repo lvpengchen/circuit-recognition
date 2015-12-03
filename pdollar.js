@@ -53,9 +53,9 @@ function PDollarRecognizer() // constructor
     this.PointClouds[0] = new PointCloud("OR", new Array(
         new Point(493,320,1),new Point(500,334,1),new Point(506,349,1),new Point(510,373,1),new Point(509,390,1),new Point(504,407,1),new Point(498,422,1),new Point(491,432,1),
         new Point(492,319,2),new Point(518,319,2),new Point(541,319,2),new Point(553,321,2),new Point(571,326,2),new Point(586,334,2),new Point(601,346,2),new Point(614,361,2),new Point(622,376,2),new Point(610,395,2),new Point(596,410,2),new Point(579,421,2),new Point(557,428,2),new Point(542,431,2),new Point(521,430,2),new Point(493,430,2)
-        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
-        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
-        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
+        // new Point(428,345,3),new Point(459,345,3),new Point(499,345,3),
+        // new Point(428,405,4),new Point(461,405,4),new Point(499,405,4),
+        // new Point(652,376,5),new Point(670,376,5),new Point(691,376,5)
     ));
 
     // this.PointClouds[1] = new PointCloud("NOT", new Array(
@@ -68,18 +68,18 @@ function PDollarRecognizer() // constructor
         new Point(472,318,1),new Point(482,332,1),new Point(486,346,1),new Point(492,362,1),new Point(493,374,1),new Point(490,393,1),new Point(485,411,1),new Point(473,431,1),
         new Point(493,320,2),new Point(500,334,2),new Point(506,349,2),new Point(510,373,2),new Point(509,390,2),new Point(504,407,2),new Point(498,422,2),new Point(491,432,2),
         new Point(492,319,3),new Point(518,319,3),new Point(541,319,3),new Point(553,321,3),new Point(571,326,3),new Point(586,334,3),new Point(601,346,3),new Point(614,361,3),new Point(622,376,3),new Point(610,395,3),new Point(596,410,3),new Point(579,421,3),new Point(557,428,3),new Point(542,431,3),new Point(521,430,3),new Point(493,430,3)
-        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
-        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
-        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
+        // new Point(428,345,4),new Point(459,345,4),new Point(499,345,4),
+        // new Point(428,405,5),new Point(461,405,5),new Point(499,405,5),
+        // new Point(652,376,6),new Point(670,376,6),new Point(691,376,6)
     ));
 
     this.PointClouds[2] = new PointCloud("NOR", new Array(
         new Point(493,320,1),new Point(500,334,1),new Point(506,349,1),new Point(510,373,1),new Point(509,390,1),new Point(504,407,1),new Point(498,422,1),new Point(491,432,1),
         new Point(492,319,2),new Point(518,319,2),new Point(541,319,2),new Point(553,321,2),new Point(571,326,2),new Point(586,334,2),new Point(601,346,2),new Point(614,361,2),new Point(622,376,2),new Point(610,395,2),new Point(596,410,2),new Point(579,421,2),new Point(557,428,2),new Point(542,431,2),new Point(521,430,2),new Point(493,430,2),
         new Point(635,363,3),new Point(625,368,3),new Point(622,379,3),new Point(631,385,3),new Point(635,387,3),new Point(645,382,3),new Point(648,375,3),new Point(641,365,3),new Point(635,363,3)
-        // new Point(428,345,5),new Point(459,345,5),new Point(499,345,5),
-        // new Point(428,405,6),new Point(461,405,6),new Point(499,405,6),
-        // new Point(652,376,7),new Point(670,376,7),new Point(691,376,7)
+        // new Point(428,345,4),new Point(459,345,4),new Point(499,345,4),
+        // new Point(428,405,5),new Point(461,405,5),new Point(499,405,5),
+        // new Point(652,376,6),new Point(670,376,6),new Point(691,376,6)
     ));
     
     // this.PointClouds[1] = new PointCloud("NAND", new Array(
