@@ -272,10 +272,12 @@ var path = 0;
         path += Math.sqrt(Math.pow(points[i].X - points[i+1].X, 2) + Math.pow(points[i].Y - points[i+1].Y, 2));
     }
     var line = Math.sqrt(Math.pow(points[0].X - points[points.length-1].X, 2) + Math.pow(points[0].Y - points[points.length-1].Y, 2));
-    if (line > 0.98 * path){
+    if (line > 0.96 * path){
+		drawText("is line");
     	return true;
     }
     else{
+	drawText("is not line");
     	return false;
     }
 }
