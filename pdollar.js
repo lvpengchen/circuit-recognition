@@ -29,7 +29,7 @@ function Result(name, score) // constructor
 // PDollarRecognizer class constants
 //
 //var NumPointClouds = 4;
-var NumPoints = 32;
+var NumPoints = 64;
 var Origin = new Point(0, 0, 0);
 //
 // PDollarRecognizer class
@@ -193,12 +193,12 @@ function Scale(points)
         maxY = Math.max(maxY, points[i].Y);
     }
     var size = Math.max(maxX - minX, maxY - minY);
-    // var sizeX = maxX - minX;
-    // var sizeY = maxY - minY;
+    var sizeX = maxX - minX;
+    var sizeY = maxY - minY;
     var newpoints = new Array();
     for (var i = 0; i < points.length; i++) {
-        var qx = (points[i].X - minX) / size;
-        var qy = (points[i].Y - minY) / size;
+        var qx = (points[i].X - minX) / sizeX;
+        var qy = (points[i].Y - minY) / sizeY;
         newpoints[newpoints.length] = new Point(qx, qy, points[i].ID);
     }
     return newpoints;
