@@ -113,6 +113,7 @@ function mouseDownEvent(x, y, button)
 			var clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")"; // stroke color
 			_g.strokeStyle = clr;
 			_g.fillStyle = clr;
+			_g.lineWidth = 4;
 			//_g.fillRect(x - 4, y - 3, 9, 9);
 		}
 		else if (button == 2)
@@ -176,10 +177,16 @@ function mouseUpEvent(x, y, button)
 		}
 		_points_single.length = 0;
 }
-function drawGate(gateName, x, y, scale)
+function drawGate(gateName)
 {
-		var image = document.getElementById("NANDSVG");
-		_g.drawImage(image, 0, 0);
+		// switch(gateName)
+		// {
+		// 		case "AND":
+		//
+		// 		case "OR"
+		// }
+		// var image = document.getElementById("NANDSVG");
+		// _g.drawImage(image, 0, 0);
 }
 function drawConnectedPoint(from, to)
 {
@@ -214,7 +221,8 @@ function clearPoints(points)
 		var clr = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
 		_g.strokeStyle = clr;
 		_g.fillStyle = clr;
-		var strokeID = 0
+		_g.lineWidth = 4;
+		var strokeID = 0;
 		for(var i = 0; i < points.length; i++)
 		{
 				if (points[i].ID != strokeID)
@@ -248,4 +256,18 @@ var path = 0;
     else{
     	return false;
     }
+}
+function findBB(points)
+{
+var minX = + Infinity, maxX = - Infinity, minY = + Infinity, maxY = - Infinity;
+    for (var i = 0; i < points.length; i++) {
+        minX = Math.min(minX, points[i].X);
+        minY = Math.min(minY, points[i].Y);
+        maxX = Math.max(maxX, points[i].X);
+        maxY = Math.max(maxY, points[i].Y);
+    }
+    var cenX = (minX + maxX)/2;
+    var cenY = (minY + maxY)/2;
+
+    return {minX: minX, maxX: maxX, minY: minY, maxY: maxY, cenX: cenX, cenY: cenY};
 }
