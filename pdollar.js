@@ -105,6 +105,7 @@ function PDollarRecognizer() // constructor
         for (var i = 0; i < this.PointClouds.length; i++) // for each point-cloud template
         {
             var d = GreedyCloudMatch(points, this.PointClouds[i]);
+            console.log(i + " : " + (d-2.0)/(-2.0));
             if (d < b) {
                 b = d; // best (least) distance
                 u = i; // point-cloud
@@ -121,7 +122,8 @@ function GreedyCloudMatch(points, P)
     var e = 0.50;
     var step = Math.floor(Math.pow(points.length, 1 - e));
     var min = + Infinity;
-    for (var i = 0; i < points.length; i += step) {
+    for (var i = 0; i < points.length; i += step)
+    {
         var d1 = CloudDistance(points, P.Points, i);
         var d2 = CloudDistance(P.Points, points, i);
         min = Math.min(min, Math.min(d1, d2)); // min3
