@@ -19,7 +19,9 @@
 		function onLoadEvent()
 		{
 			_points = new Array(); // point array for current stroke
+			_points_single = new Array(); //array of point in one stroke
 			_strokeID = 0;
+			_check = 0;  //check if there is a line
 			_r = new PDollarRecognizer();
 			_r1 = new PDollarRecognizer();
 			_r1.addGates(
@@ -140,6 +142,7 @@
 				x -= _rc.x;
 				y -= _rc.y - getScrollY();
 				_points[_points.length] = new Point(x, y, _strokeID); // append
+				_points_single[_points_single.length] = new Point(x, y, _strokeID);
 				drawConnectedPoint(_points.length - 2, _points.length - 1);
 			}
 		}
@@ -148,21 +151,31 @@
 			document.onselectstart = function() { return true; } // enable drag-select
 			document.onmousedown = function() { return true; } // enable drag-select
 
-			if(_strokeID == 1)
-			{
-				(isline(_points))?(_r=_r1):(_r=_r2);//check if the first stroke is line or not.
-			}
+			// if(_strokeID == 1)
+			// {
+			// 	(isline(_points))?(_r=_r1):(_r=_r2);//check if the first stroke is line or not.
+			// }
 
 			if (button <= 1)
 			{
 				if (_isDown)
 				{
+					if (isline(_points_single)){
+						_check = 1;
+					}
 					_isDown = false;
 					// drawText("Stroke #" + _strokeID + " recorded.");
 				}
 			}
 			else if (button == 2) // segmentation with right-click
 			{
+				if(_check == 1){
+					_r = _r1;
+				}
+				else{
+					_r = _r2;
+				}
+
 				if (_points.length >= 10)
 				{
 					var result = _r.Recognize(_points);
@@ -173,7 +186,9 @@
 					drawText("Too little input made. Please try again.");
 				}
 				_strokeID = 0; // signal to begin new gesture on next mouse-down
+				_check = 0;
 			}
+			_points_single.length = 0;
 		}
 		function drawConnectedPoint(from, to)
 		{
@@ -219,11 +234,9 @@
 		    }
 		    var line = Math.sqrt(Math.pow(points[0].X - points[points.length-1].X, 2) + Math.pow(points[0].Y - points[points.length-1].Y, 2));
 		    if (line > 0.98 * path){
-					drawText("is line");
 		    	return true;
 		    }
 		    else{
-					drawText("is not line");
 		    	return false;
 		    }
 		}
