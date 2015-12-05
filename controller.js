@@ -61,6 +61,8 @@ function onLoadEvent()
 
 	_isDown = false;
 
+
+
 }
 function getCanvasRect(canvas)
 {
@@ -174,6 +176,7 @@ function mouseUpEvent(x, y, button)
 			else
 			{
 				drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+
 				drawGate(result.Name);
 			}
 		}
@@ -189,8 +192,9 @@ function mouseUpEvent(x, y, button)
 function drawGate(gateName)
 {
 	var boundBox = findBB(_points);
-	var width = boundBox.maxX - boundBox.minX;
 	var height = boundBox.maxY - boundBox.minY;
+	var width = Math.round(height * 9.0 / 4.0);
+	var center = {X:boundBox.cenX, Y:boundBox.cenY};
 	var image;
 	switch(gateName)
 	{
@@ -216,7 +220,20 @@ function drawGate(gateName)
 				image = document.getElementById("XNORSVG");
 				break;
 	}
-	_g.drawImage(image, boundBox.minX, boundBox.minY, width, height);
+	var offsetX = center.X - Math.round(width/2.0);
+	var offsetY = center.Y - Math.round(height/2.0);
+	_g.drawImage(image, offsetX, offsetY, width, height);
+
+	drawPin(50,50);
+}
+function drawPin(x, y, radius)
+{
+	_g.beginPath();
+	_g.lineWidth = 2;
+	_g.arc(x,y,radius,0,2 * Math.PI, false);
+	_g.closePath()
+	_g.stroke();
+	_g.lineWidth = 6;
 }
 function drawConnectedPoint(from, to)
 {
@@ -262,6 +279,11 @@ function clearPoints(points)
 			}
 			drawConnectedPoint(i, i-1);
 	}
+
+	//resotre the settings for canvas context
+	clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
+	_g.strokeStyle = clr;
+	_g.fillStyle = clr;
 }
 
 function onClickClearStrokes()
@@ -285,7 +307,7 @@ var path = 0;
     	return true;
     }
     else{
-	drawText("is not line");
+			drawText("is not line");
     	return false;
     }
 }
@@ -298,8 +320,8 @@ function findBB(points)
         maxX = Math.max(maxX, points[i].X);
         maxY = Math.max(maxY, points[i].Y);
     }
-    var cenX = (minX + maxX)/2;
-    var cenY = (minY + maxY)/2;
+    var cenX = Math.round((minX + maxX)/2);
+    var cenY = Math.round((minY + maxY)/2);
 
     return {minX: minX, maxX: maxX, minY: minY, maxY: maxY, cenX: cenX, cenY: cenY};
 }
