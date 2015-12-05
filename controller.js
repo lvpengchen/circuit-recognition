@@ -82,14 +82,15 @@ function getCanvasRect(canvas)
 function getScrollY()
 {
 	var scrollY = 0;
-	if (typeof(document.body.parentElement) != 'undefined')
-	{
-		scrollY = document.body.parentElement.scrollTop; // IE
-	}
-	else if (typeof(window.pageYOffset) != 'undefined')
-	{
-		scrollY = window.pageYOffset; // FF
-	}
+	scrollY = window.scrollY;
+	// if (typeof(document.body.parentElement) != 'undefined')
+	// {
+	// 	scrollY = document.body.parentElement.scrollTop; // IE
+	// }
+	// else if (typeof(window.pageYOffset) != 'undefined')
+	// {
+	// 	scrollY = window.pageYOffset; // FF
+	// }
 	return scrollY;
 }
 //
@@ -178,6 +179,8 @@ function mouseUpEvent(x, y, button)
 				drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
 
 				drawGate(result.Name);
+
+
 			}
 		}
 		else
@@ -224,7 +227,11 @@ function drawGate(gateName)
 	var offsetY = center.Y - Math.round(height/2.0);
 	_g.drawImage(image, offsetX, offsetY, width, height);
 
-	drawPin(50,50);
+	var pin = new Gate(gateName, _points);
+	for(var i = 0; i < pin.Pin.length; i++){
+		drawPin(pin.Pin[i].X, pin.Pin[i].Y, 0.05 * pin.Height);
+	}
+
 }
 function drawPin(x, y, radius)
 {
