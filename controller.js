@@ -166,8 +166,16 @@ function mouseUpEvent(x, y, button)
 		if (_points.length >= 10)
 		{
 			var result = _r.Recognize(_points);
-			drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-			drawGate(result.Name);
+			var noMatchScoreThreshold = 0.0;
+			if (result.Score <= noMatchScoreThreshold)
+			{
+				drawText("Result: No Match");
+			}
+			else
+			{
+				drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+				drawGate(result.Name);
+			}
 		}
 		else
 		{
