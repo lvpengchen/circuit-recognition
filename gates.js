@@ -4,14 +4,32 @@ function Point(x, y){
 }
 
 function Gate(name, points){
+
+	this.findBB = function()
+	{
+		var minX = + Infinity, maxX = - Infinity, minY = + Infinity, maxY = - Infinity;
+	    for (var i = 0; i < this.Points.length; i++) {
+	        minX = Math.min(minX, this.Points[i].X);
+	        minY = Math.min(minY, this.Points[i].Y);
+	        maxX = Math.max(maxX, this.Points[i].X);
+	        maxY = Math.max(maxY, this.Points[i].Y);
+	    }
+	    var cenX = Math.round((minX + maxX)/2);
+	    var cenY = Math.round((minY + maxY)/2);
+
+	    return {minX: minX, maxX: maxX, minY: minY, maxY: maxY, cenX: cenX, cenY: cenY};
+	};
+
 	this.Name = name;
-	this.BoundBox = findBB(_points);
+	this.Points = points;
+	this.BoundBox = this.findBB();
 	this.Height = this.BoundBox.maxY - this.BoundBox.minY;
 	this.Width = Math.round(this.Height * 9.0 / 4.0);
+	this.Pin = new Array();
+
 	var center = {X:this.BoundBox.cenX, Y:this.BoundBox.cenY};
 	var offsetX = center.X - Math.round(this.Width/2.0);
 	var offsetY = center.Y - Math.round(this.Height/2.0);
-	
 	switch(name)
 	{
 		case "AND":
@@ -37,4 +55,6 @@ function Gate(name, points){
 			this.Output = 1;
 			break;
 	}
+
+
 }

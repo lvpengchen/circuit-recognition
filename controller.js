@@ -1,13 +1,17 @@
-var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _g, _rc, timerForRecognize; // global variables
+//parameters
 var noMatchScoreThreshold = -0.5;
 var waitTimeForNextStroke = 2000;//ms
+
+//global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _g, _rc, timerForRecognize,_gatesArray; // global variables
+//page instantiation
 function onLoadEvent()
 {
 	_points = new Array(); // point array for current stroke
 	_points_single = new Array(); //array of point in one stroke
 	_strokeID = 0;
 	_check = 0;  //check if there is a line
-	_gates = new Array();
+	_gatesArray = new Array();
 	_r = new PDollarRecognizer();
 	_r1 = new PDollarRecognizer();
 	_r1.addGates(
@@ -83,9 +87,6 @@ function onLoadEvent()
 	_g.fillStyle = "rgb(255,255,136)";
 	_g.fillRect(0, 0, _rc.width, 20);
 	_isDown = false;
-
-
-
 }
 function getCanvasRect(canvas)
 {
@@ -166,11 +167,6 @@ function mouseUpEvent(x, y, button)
 	document.onselectstart = function() { return true; } // enable drag-select
 	document.onmousedown = function() { return true; } // enable drag-select
 
-	// if(_strokeID == 1)
-	// {
-	// 	(isline(_points))?(_r=_r1):(_r=_r2);//check if the first stroke is line or not.
-	// }
-
 	if (button <= 1)
 	{
 		if (_isDown)
@@ -180,27 +176,30 @@ function mouseUpEvent(x, y, button)
 			}
 			_isDown = false;
 			// drawText("Stroke #" + _strokeID + " recorded.");
-			timerForRecognize = window.setTimeout(recognize, waitTimeForNextStroke);
+			timerForRecognize = window.setTimeout(recognize, waitTimeForNextStroke, _points);
 		}
 	}
 	else if (button == 2) // segmentation with right-click
 	{
-		recognize();
+		recognize(_points);
 	}
 	_points_single.length = 0;
 }
-function recognize()
+
+
+//core functions
+function recognize(strokePoints)
 {
-	clearStrokeOnCanvas(_points);
+	clearStrokeOnCanvas(strokePoints);
 	if(_check == 1){
 		_r = _r1;
 	}
 	else{
 		_r = _r2;
 	}
-	if (_points.length >= 10)
+	if (strokePoints.length >= 10)
 	{
-		var result = _r.Recognize(_points);
+		var result = _r.Recognize(strokePoints);
 		if (result.Score <= noMatchScoreThreshold)
 		{
 			drawText("Result: No Match");
@@ -208,8 +207,9 @@ function recognize()
 		else
 		{
 			drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-			drawGate(result.Name);
-			_gates[_gates.length] = new Gate(result.Name, _points);
+			_gatesArray[_gatesArray.length] = new Gate(result.Name, strokePoints);
+			drawGate(_gatesArray[_gatesArray.length-1]);
+			console.log(_gatesArray.length);
 		}
 	}
 	else
@@ -218,14 +218,14 @@ function recognize()
 	}
 	_strokeID = 0; // signal to begin new gesture on next mouse-downs
 }
-function drawGate(gateName)
+function drawGate(gate)
 {
-	var boundBox = findBB(_points);
+	var boundBox = gate.BoundBox;
 	var height = boundBox.maxY - boundBox.minY;
 	var width = Math.round(height * 9.0 / 4.0);
 	var center = {X:boundBox.cenX, Y:boundBox.cenY};
 	var image;
-	switch(gateName)
+	switch(gate.Name)
 	{
 			case "AND":
 				image = document.getElementById("ANDSVG");
@@ -257,10 +257,10 @@ function drawGate(gateName)
 	var offsetY = center.Y - Math.round(height/2.0);
 	_g.drawImage(image, offsetX, offsetY, width, height);
 
-	var pin = new Gate(gateName, _points);
-	if (pin.Name == "IO") return;// no pin drawing for IO
-	for(var i = 0; i < pin.Pin.length; i++){
-			drawPin(pin.Pin[i].X, pin.Pin[i].Y, 0.05 * pin.Height);
+	// var pin = new Gate(gateName, strokePoints);
+	// if (pin.Name == "IO") return;// no pin drawing for IO
+	for(var i = 0; i < gate.Pin.length; i++){
+			drawPin(gate.Pin[i].X, gate.Pin[i].Y, 0.05 * gate.Height);
 	}
 
 }
@@ -300,7 +300,6 @@ function round(n, d) // round 'n' to 'd' decimals
 //
 // Multistroke Adding and Clearing
 //
-
 function clearStrokeOnCanvas(points)
 {
 	var clr = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
@@ -323,7 +322,23 @@ function clearStrokeOnCanvas(points)
 	_g.strokeStyle = clr;
 	_g.fillStyle = clr;
 }
-
+function clearLastBeautifiedGate()
+{
+	// this function actually redraws every beautified gate except the last one
+	// help user to correct the mistake made by whosoever.
+	if(_gatesArray.length == 0)
+	{
+		drawText("No more gates to be cleared");
+		return;
+	}
+  _gatesArray.length--;
+	onClickClearStrokes();
+	for (var i = 0; i < _gatesArray.length; i++)
+	{
+		drawGate(_gatesArray[i]);
+	}
+	drawText("Last Gate Cleared");
+}
 function onClickClearStrokes()
 {
 	_points.length = 0;
@@ -331,8 +346,14 @@ function onClickClearStrokes()
 	_strokeID = 0;
 	_g.clearRect(0, 0, _rc.width, _rc.height);
 	drawText("Canvas cleared.");
+
+	//resotre the settings for canvas context
+	clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
+	_g.strokeStyle = clr;
+	_g.fillStyle = clr;
 }
 
+//helper functions
 function isline(points)
 {
 var path = 0;
@@ -348,22 +369,4 @@ var path = 0;
 		//drawText("is not line");
     	return false;
     }
-}
-function findBB(points)
-{
-	var minX = + Infinity, maxX = - Infinity, minY = + Infinity, maxY = - Infinity;
-    for (var i = 0; i < points.length; i++) {
-        minX = Math.min(minX, points[i].X);
-        minY = Math.min(minY, points[i].Y);
-        maxX = Math.max(maxX, points[i].X);
-        maxY = Math.max(maxY, points[i].Y);
-    }
-    var cenX = Math.round((minX + maxX)/2);
-    var cenY = Math.round((minY + maxY)/2);
-
-    return {minX: minX, maxX: maxX, minY: minY, maxY: maxY, cenX: cenX, cenY: cenY};
-}
-function submit()
-{
-	_gates.length = 0;
 }
