@@ -25,12 +25,16 @@ function Gate(name, points){
 				new Point(offsetX + 0.03 * this.Width, offsetY + 0.7 * this.Height),
 				new Point(offsetX + 0.97 * this.Width, offsetY + 1 / 2 * this.Height)
 			)
+			this.Input = 2;
+			this.Output = 1;
 			break;
 		case "NOT":
 			this.Pin = new Array(
 				new Point(offsetX + 0.03 * this.Width, offsetY + 1 / 2 * this.Height),
 				new Point(offsetX + 0.97 * this.Width, offsetY+ 1 / 2 * this.Height)
 			)
+			this.Input = 1;
+			this.Output = 1;
 			break;
 	}
 }

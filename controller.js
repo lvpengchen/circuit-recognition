@@ -6,6 +6,7 @@ function onLoadEvent()
 	_points_single = new Array(); //array of point in one stroke
 	_strokeID = 0;
 	_check = 0;  //check if there is a line
+	_gates = new Array();
 	_r = new PDollarRecognizer();
 	_r1 = new PDollarRecognizer();
 	_r1.addGates(
@@ -24,6 +25,16 @@ function onLoadEvent()
 				new Point(323,600,2),new Point(362,619,2),new Point(323,638,2),//619
 				new Point(363,619,3),new Point(365,622,3),new Point(367,623,3),new Point(370,622,3),new Point(371,620,3),new Point(370,617,3),new Point(367,616,3),new Point(364,617,3),new Point(363,619,3)
 			))
+			// new PointCloud("INPUT", new Array(
+			// 	new Point(445,382,1),new Point(445,520,1),
+			// 	new Point(445,382,2),new Point(594,382,2),new Point(594,520,2),
+			// 	new Point(445,520,3),new Point(594,520,3)
+			// )),
+			// new PointCloud("OUTPUT", new Array(
+			// 	new Point(346,339,1),new Point(265,569,1),
+			// 	new Point(346,339,2),new Point(708,339,2),new Point(627,569,2),
+			// 	new Point(256,569,3),new Point(627,569,3)
+			// ))
 		)
 	);
 	_r2 = new PDollarRecognizer();
@@ -164,7 +175,7 @@ function mouseUpEvent(x, y, button)
 }
 function recognize()
 {
-	clearPoints(_points);
+	clearPoints_canvas(_points);
 	if(_check == 1){
 		_r = _r1;
 	}
@@ -181,8 +192,8 @@ function recognize()
 		else
 		{
 			drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-
 			drawGate(result.Name);
+			_gates[_gates.length] = new Gate(result.Name, _points);
 		}
 	}
 	else
@@ -269,7 +280,7 @@ function round(n, d) // round 'n' to 'd' decimals
 // Multistroke Adding and Clearing
 //
 
-function clearPoints(points)
+function clearPoints_canvas(points)
 {
 	var clr = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
 	_g.strokeStyle = clr;
@@ -309,11 +320,11 @@ var path = 0;
     }
     var line = Math.sqrt(Math.pow(points[0].X - points[points.length-1].X, 2) + Math.pow(points[0].Y - points[points.length-1].Y, 2));
     if (line > 0.96 * path){
-		drawText("is line");
+		//drawText("is line");
     	return true;
     }
     else{
-			drawText("is not line");
+		//drawText("is not line");
     	return false;
     }
 }
@@ -330,4 +341,8 @@ function findBB(points)
     var cenY = Math.round((minY + maxY)/2);
 
     return {minX: minX, maxX: maxX, minY: minY, maxY: maxY, cenX: cenX, cenY: cenY};
+}
+function submit()
+{
+	_gates.length = 0;
 }
