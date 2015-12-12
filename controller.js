@@ -1,4 +1,5 @@
-var _isDown, _points, _strokeID, _r, _g, _rc; // global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _g, _rc; // global variables
+var noMatchScoreThreshold = -0.5;
 function onLoadEvent()
 {
 	_points = new Array(); // point array for current stroke
@@ -58,7 +59,6 @@ function onLoadEvent()
 	_rc = getCanvasRect(canvas); // canvas rect on page
 	_g.fillStyle = "rgb(255,255,136)";
 	_g.fillRect(0, 0, _rc.width, 20);
-
 	_isDown = false;
 
 
@@ -158,39 +158,38 @@ function mouseUpEvent(x, y, button)
 	}
 	else if (button == 2) // segmentation with right-click
 	{
-		clearPoints(_points);
-		if(_check == 1){
-			_r = _r1;
-		}
-		else{
-			_r = _r2;
-		}
-
-		if (_points.length >= 10)
+		recognize();
+	}
+	_points_single.length = 0;
+}
+function recognize()
+{
+	clearPoints(_points);
+	if(_check == 1){
+		_r = _r1;
+	}
+	else{
+		_r = _r2;
+	}
+	if (_points.length >= 10)
+	{
+		var result = _r.Recognize(_points);
+		if (result.Score <= noMatchScoreThreshold)
 		{
-			var result = _r.Recognize(_points);
-			var noMatchScoreThreshold = 0.0;
-			if (result.Score <= noMatchScoreThreshold)
-			{
-				drawText("Result: No Match");
-			}
-			else
-			{
-				drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-
-				drawGate(result.Name);
-
-
-			}
+			drawText("Result: No Match");
 		}
 		else
 		{
-			drawText("Too little input made. Please try again.");
+			drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+
+			drawGate(result.Name);
 		}
-		_strokeID = 0; // signal to begin new gesture on next mouse-down
-		//_check = 0;
 	}
-	_points_single.length = 0;
+	else
+	{
+		drawText("Too little input made. Please try again.");
+	}
+	_strokeID = 0; // signal to begin new gesture on next mouse-downs
 }
 function drawGate(gateName)
 {
