@@ -111,7 +111,7 @@ function PDollarRecognizer() // constructor
                 u = i; // point-cloud
             }
         }
-        return (u == - 1) ? new Result("No match.", 0.0) : new Result(this.PointClouds[u].Name, Math.max((b - 2.0) / - 2.0, 0.0));
+        return (u == - 1) ? new Result("No match.", -Infinity) : new Result(this.PointClouds[u].Name, (b - 2.0) / - 2.0);
     };
 }
 //

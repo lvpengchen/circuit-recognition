@@ -1,5 +1,6 @@
-var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _g, _rc; // global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _g, _rc, timerForRecognize; // global variables
 var noMatchScoreThreshold = -0.5;
+var waitTimeForNextStroke = 2000;//ms
 function onLoadEvent()
 {
 	_points = new Array(); // point array for current stroke
@@ -59,7 +60,18 @@ function onLoadEvent()
 	            new Point(493,320,2),new Point(500,334,2),new Point(506,349,2),new Point(510,373,2),new Point(509,390,2),new Point(504,407,2),new Point(498,422,2),new Point(491,432,2),
 	            new Point(492,319,3),new Point(518,319,3),new Point(541,319,3),new Point(553,321,3),new Point(571,326,3),new Point(586,334,3),new Point(601,346,3),new Point(614,361,3),new Point(622,376,3),new Point(610,395,3),new Point(596,410,3),new Point(579,421,3),new Point(557,428,3),new Point(542,431,3),new Point(521,430,3),new Point(493,430,3),
 	            new Point(635,363,4),new Point(625,368,4),new Point(622,379,4),new Point(631,385,4),new Point(635,387,4),new Point(645,382,4),new Point(648,375,4),new Point(641,365,4),new Point(635,363,4)
-	        ))
+	        )),
+					new PointCloud("IO", new Array(
+							new Point(524,295,1),new Point(539,296,1),new Point(566,300,1),new Point(584,305,1),new Point(594,309,1),new Point(600,312,1),new Point(612,317,1),new Point(623,324,1),new Point(633,331,1),
+							new Point(643,340,1),new Point(655,350,1),new Point(663,360,1),new Point(670,369,1),new Point(676,377,1),new Point(682,388,1),new Point(688,401,1),new Point(693,411,1),new Point(694,415,1),
+							new Point(698,428,1),new Point(701,440,1),new Point(703,455,1),new Point(704,465,1),new Point(704,475,1),new Point(703,502,1),new Point(700,518,1),new Point(696,532,1),new Point(689,548,1),
+							new Point(682,563,1),new Point(670,582,1),new Point(660,595,1),new Point(648,608,1),new Point(638,616,1),new Point(620,629,1),new Point(604,638,1),new Point(587,654,1),new Point(570,650,1),
+							new Point(554,654,1),new Point(542,655,1),new Point(524,656,1),new Point(509,656,1),new Point(498,654,1),new Point(486,652,1),new Point(472,648,1),new Point(463,645,1),new Point(448,639,1),
+							new Point(438,634,1),new Point(429,628,1),new Point(417,621,1),new Point(406,612,1),new Point(397,603,1),new Point(385,590,1),new Point(378,581,1),new Point(371,570,1),new Point(363,557,1),
+							new Point(363,557,1),new Point(357,541,1),new Point(352,529,1),new Point(348,513,1),new Point(344,491,1),new Point(344,476,1),new Point(347,448,1),new Point(350,427,1),new Point(357,407,1),
+							new Point(367,389,1),new Point(378,371,1),new Point(390,355,1),new Point(402,343,1),new Point(415,333,1),new Point(432,321,1),new Point(451,310,1),new Point(472,303,1),new Point(499,296,1),
+							new Point(519,295,1),new Point(529,295,1)
+					))
     	)
 	);
 
@@ -129,10 +141,13 @@ function mouseDownEvent(x, y, button)
 		_g.fillStyle = clr;
 		_g.lineWidth = 4;
 		//_g.fillRect(x - 4, y - 3, 9, 9);
+
+		window.clearTimeout(timerForRecognize);
 	}
 	else if (button == 2)
 	{
 		drawText("Recognizing gesture...");
+		window.clearTimeout(timerForRecognize);
 	}
 }
 function mouseMoveEvent(x, y, button)
@@ -165,6 +180,7 @@ function mouseUpEvent(x, y, button)
 			}
 			_isDown = false;
 			// drawText("Stroke #" + _strokeID + " recorded.");
+			timerForRecognize = window.setTimeout(recognize, waitTimeForNextStroke);
 		}
 	}
 	else if (button == 2) // segmentation with right-click
@@ -175,7 +191,7 @@ function mouseUpEvent(x, y, button)
 }
 function recognize()
 {
-	clearPoints_canvas(_points);
+	clearStrokeOnCanvas(_points);
 	if(_check == 1){
 		_r = _r1;
 	}
@@ -232,14 +248,19 @@ function drawGate(gateName)
 			case "XNOR":
 				image = document.getElementById("XNORSVG");
 				break;
+			case "IO":
+				width = width * 4.0 / 9.0;
+				image = document.getElementById("IOSVG");
+				break;
 	}
 	var offsetX = center.X - Math.round(width/2.0);
 	var offsetY = center.Y - Math.round(height/2.0);
 	_g.drawImage(image, offsetX, offsetY, width, height);
 
 	var pin = new Gate(gateName, _points);
+	if (pin.Name == "IO") return;// no pin drawing for IO
 	for(var i = 0; i < pin.Pin.length; i++){
-		drawPin(pin.Pin[i].X, pin.Pin[i].Y, 0.05 * pin.Height);
+			drawPin(pin.Pin[i].X, pin.Pin[i].Y, 0.05 * pin.Height);
 	}
 
 }
@@ -280,7 +301,7 @@ function round(n, d) // round 'n' to 'd' decimals
 // Multistroke Adding and Clearing
 //
 
-function clearPoints_canvas(points)
+function clearStrokeOnCanvas(points)
 {
 	var clr = "rgb(" + 0 + "," + 0 + "," + 0 + ")";
 	_g.strokeStyle = clr;
