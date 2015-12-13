@@ -3,7 +3,7 @@ var noMatchScoreThreshold = -0.5;
 var waitTimeForNextStroke = 2000;//ms
 
 //global variables
-var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _g, _rc, timerForRecognize,_gatesArray; // global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize,_gatesArray; // global variables
 //page instantiation
 function onLoadEvent()
 {
@@ -11,6 +11,7 @@ function onLoadEvent()
 	_points_single = new Array(); //array of point in one stroke
 	_strokeID = 0;
 	_check = 0;  //check if there is a line
+	_check_wire = 0;
 	_gatesArray = new Array();
 	_r = new PDollarRecognizer();
 	_r1 = new PDollarRecognizer();
@@ -126,21 +127,33 @@ function mouseDownEvent(x, y, button)
 	document.onmousedown = function() { return false; } // disable drag-select
 	if (button <= 1)
 	{
-		_isDown = true;
+
 		x -= _rc.x;
 		y -= _rc.y - getScrollY();
+
+		_isDown = true;
 		if (_strokeID == 0) // starting a new gesture
 		{
 			_points.length = 0;
 			//_g.clearRect(0, 0, _rc.width, _rc.height);
 			_check = 0;
+			_check_wire = 0
 		}
 		_points[_points.length] = new Point(x, y, ++_strokeID);
-		drawText("Recording stroke #" + _strokeID + "...");
+
 		var clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")"; // stroke color
 		_g.strokeStyle = clr;
 		_g.fillStyle = clr;
 		_g.lineWidth = 4;
+
+		// check if the position of the cursor is at a pin
+		if (check_wire(x, y, _gatesArray)){
+			_check_wire = 1;
+			drawText("Pin!");
+			return;
+		}
+
+		drawText("Recording stroke #" + _strokeID + "...");
 		//_g.fillRect(x - 4, y - 3, 9, 9);
 
 		window.clearTimeout(timerForRecognize);
@@ -171,6 +184,26 @@ function mouseUpEvent(x, y, button)
 	{
 		if (_isDown)
 		{
+			x -= _rc.x;
+			y -= _rc.y - getScrollY();
+			if ((_check_wire) && check_wire(x,y,_gatesArray))
+			{
+				_points_single.length = 0;
+				_strokeID = 0;
+				drawText("is wire!");
+				_isDown = false;
+				return;
+			}
+			else if (_check_wire)
+			{
+				_points_single.length = 0;
+				_strokeID = 0;
+				drawText("is not wire!");
+				_isDown = false;
+				return;
+			}
+
+
 			if (isline(_points_single)){
 				_check = 1;
 			}
@@ -288,15 +321,6 @@ function drawText(str)
 	_g.fillStyle = "rgb(0,0,255)";
 	_g.fillText(str, 1, 14);
 }
-function rand(low, high)
-{
-	return Math.floor((high - low + 1) * Math.random()) + low;
-}
-function round(n, d) // round 'n' to 'd' decimals
-{
-	d = Math.pow(10, d);
-	return Math.round(n * d) / d
-}
 //
 // Multistroke Adding and Clearing
 //
@@ -328,7 +352,7 @@ function clearLastBeautifiedGate()
 	// help user to correct the mistake made by whosoever.
 	if(_gatesArray.length == 0)
 	{
-		drawText("No more gates to be cleared");
+		drawText("No gate to be cleared");
 		return;
 	}
   _gatesArray.length--;
@@ -352,6 +376,33 @@ function onClickClearStrokes()
 	_g.strokeStyle = clr;
 	_g.fillStyle = clr;
 }
+function check_wire(x, y, gates)
+{
+	if (gates.length == 0 || gates.length == 1) return false;
+	var minDis = Infinity;
+	for (var i = 0; i < gates.length; i++) {
+		var Dis;
+	  if (gates[i].Name == "NOT"){
+			Dis = Math.min(Math.pow(gates[i].Pin[0].X - x, 2) + Math.pow(gates[i].Pin[0].Y - y, 2),
+			Math.pow(gates[i].Pin[1].X - x, 2) + Math.pow(gates[i].Pin[1].Y - y, 2));
+		}
+		else{
+			Dis = Math.min(Math.pow(gates[i].Pin[0].X - x, 2) + Math.pow(gates[i].Pin[0].Y - y, 2),
+			Math.pow(gates[i].Pin[1].X - x, 2) + Math.pow(gates[i].Pin[1].Y - y, 2));
+			Dis = Math.min(Math.pow(gates[i].Pin[2].X - x, 2) + Math.pow(gates[i].Pin[2].Y - y, 2), Dis);
+		}
+
+		if (Dis < minDis){
+			this.startgate = gates[i];
+			minDis = Dis;
+		}
+   }
+	if(minDis < gates[0].Height * 0.2){
+		return true;
+	}
+		return false;
+}
+
 
 //helper functions
 function isline(points)
@@ -369,4 +420,13 @@ var path = 0;
 		//drawText("is not line");
     	return false;
     }
+}
+function rand(low, high)
+{
+	return Math.floor((high - low + 1) * Math.random()) + low;
+}
+function round(n, d) // round 'n' to 'd' decimals
+{
+	d = Math.pow(10, d);
+	return Math.round(n * d) / d
 }
