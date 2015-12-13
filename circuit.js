@@ -12,7 +12,7 @@ function Circuit(gateArray, wireArray, inputArray, outputArray)
   this._inputArray = inputArray;
   this._outputArray = outputArray;
 
-  this.findInputWireIndex = function(wireIndex)
+  this.findOutputWireIndex = function(wireIndex)
   {
     var gateIndex = this._wireArray[wireIndex].endgate;
     var items = new Array();
@@ -26,7 +26,7 @@ function Circuit(gateArray, wireArray, inputArray, outputArray)
     return items;
   }
 
-  this.findOutputWireIndex = function(wireIndex)
+  this.findInputWireIndex = function(wireIndex)
   {
     var gateIndex = this._wireArray[wireIndex].startgate;
     var items = new Array();
@@ -50,8 +50,8 @@ function Circuit(gateArray, wireArray, inputArray, outputArray)
       }
     }// if node is leaf return node.value;
 
-    gateName = this._gateArray[this._wireArray[node].startgate].Name;
-    inputWireIndices = this.findInputWireIndex(node);
+    var gateName = this._gateArray[this._wireArray[node].startgate].Name;
+    var inputWireIndices = this.findInputWireIndex(node);
 
     switch (gateName) {
       case "AND": return this.calc(inputWireIndices[0]) && this.calc(inputWireIndices[1]);

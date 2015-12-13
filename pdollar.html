@@ -13,6 +13,8 @@
 	<script type="text/javascript" src="pdollar.js"></script>
 	<script type="text/javascript" src="controller.js"></script>
 	<script type="text/javascript" src="gates.js"></script>
+	<script type="text/javascript" src="circuit.js"></script>
+
 
 </head>
 <body onload="onLoadEvent()">
@@ -53,10 +55,10 @@
 			</canvas>
 			</div>
 			<div class="col-sm-1 btn-group-vertical">
-				<button type="button" class="btn btn-warning" value="Clear" onclick="clearAll()">Clear</button>
-				<button type="button" class="btn btn-primary" value="Submit">Submit</button>
+				<button type="button" class="btn btn-warning" value="Clear" onclick="onClearAll()">Clear</button>
+				<button type="button" class="btn btn-primary" value="Submit" onclick="onSubmit()">Submit</button>
 				<!-- <button type="button" class="btn btn-primary">Tool</button> -->
-				<button type="button" class="btn btn-danger" value = "Erase" onclick="clearLastBeautifiedGate()">Erase Last</button>
+				<button type="button" class="btn btn-danger" value = "Erase" onclick="onClearLastBeautifiedGate()">Erase Last</button>
 				<button type="button" class="btn btn-info">Color</button>
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 //parameters
 var noMatchScoreThreshold = -0.5;
-var waitTimeForNextStroke = 2000;//ms
+var waitTimeForNextStroke = 1500;//ms
 
 //global variables
 var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize, _gatesArray, _wireArray, _inputArray, _outputArray, symbolIn, symbolOut, symbolIn_Index, symbolOut_Index; // global variables
@@ -154,7 +154,8 @@ function mouseDownEvent(x, y, button)
 		_g.lineWidth = 4;
 
 		// check if the position of the cursor is at a pin
-		if (check_wire(x, y, _gatesArray)){
+		if (check_wire(x, y, _gatesArray))
+		{
 			_check_wire = 1;
 			drawText("Pin!");
 			return;
@@ -195,7 +196,7 @@ function mouseUpEvent(x, y, button)
 			y -= _rc.y - getScrollY();
 			if ((_check_wire) && check_wire(x,y,_gatesArray))
 			{
-				
+
 				_points_single.length = 0;
 				_strokeID = 0;
 				drawText("is wire!");
@@ -203,12 +204,12 @@ function mouseUpEvent(x, y, button)
 				if(_wireArray[_wireArray.length - 1].isinput){
 					str = symbolIn[symbolIn_Index] + '<input type="text" class="form-control" id="input"></input>';
 					$('#forinput').append(str)
-					_inputArray[_inputArray.length] = new IO(symbolIn[symbolIn_Index++], 1, _wireArray.length - 1);
-				
+					_inputArray[_inputArray.length] = new IO(symbolIn[symbolIn_Index++], true, _wireArray.length - 1);
+
 				}
 				if(_wireArray[_wireArray.length - 1].isoutput){
-					_outputArray[_outputArray.length] = new IO(symbolOut[symbolOut_Index--], 0, _wireArray.length - 1);
-			
+					_outputArray[_outputArray.length] = new IO(symbolOut[symbolOut_Index--], true, _wireArray.length - 1);
+
 				}
 				_isDown = false;
 				return;
@@ -243,10 +244,12 @@ function mouseUpEvent(x, y, button)
 function recognize(strokePoints)
 {
 	clearStrokeOnCanvas(strokePoints);
-	if(_check == 1){
+	if(_check == 1)
+	{
 		_r = _r1;
 	}
-	else{
+	else
+	{
 		_r = _r2;
 	}
 	if (strokePoints.length >= 10)
@@ -261,7 +264,7 @@ function recognize(strokePoints)
 			drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
 			_gatesArray[_gatesArray.length] = new Gate(result.Name, strokePoints);
 			drawGate(_gatesArray[_gatesArray.length-1]);
-			console.log(_gatesArray.length);
+			// console.log(_gatesArray.length);
 		}
 	}
 	else
@@ -311,7 +314,8 @@ function drawGate(gate)
 
 	// var pin = new Gate(gateName, strokePoints);
 	// if (pin.Name == "IO") return;// no pin drawing for IO
-	for(var i = 0; i < gate.Pin.length; i++){
+	for(var i = 0; i < gate.Pin.length; i++)
+	{
 			drawPin(gate.Pin[i].X, gate.Pin[i].Y, 0.05 * gate.Height);
 	}
 
@@ -365,7 +369,7 @@ function clearStrokeOnCanvas(points)
 	_g.strokeStyle = clr;
 	_g.fillStyle = clr;
 }
-function clearLastBeautifiedGate()
+function onClearLastBeautifiedGate()
 {
 	// this function actually redraws every beautified gate except the last one
 	// help user to correct the mistake made by whosoever.
@@ -396,12 +400,15 @@ function clearStrokes()
 	_g.fillStyle = clr;
 
 }
-function clearAll()
+function onClearAll()
 {
 	_points.length = 0;
 	_check = 0;
 	_strokeID = 0;
 	_gatesArray.length = 0;
+	_inputArray.length = 0;
+	_outputArray.length = 0;
+	//clear input boxes
 	_g.clearRect(0, 0, _rc.width, _rc.height);
 	drawText("Canvas cleared.");
 
@@ -411,6 +418,11 @@ function clearAll()
 	_g.fillStyle = clr;
 	symbolIn_Index = 0;
 	symbolOut_Index = 25;
+}
+function onSubmit()
+{
+	cir = Circuit(_gatesArray, _wireArray, _inputArray, _outputArray);
+	this.calcAll();
 }
 function check_wire(x, y, gates)
 {
@@ -428,10 +440,11 @@ function check_wire(x, y, gates)
 			Dis = Math.min(Math.pow(gates[i].Pin[2].X - x, 2) + Math.pow(gates[i].Pin[2].Y - y, 2), Dis);
 		}
 		else{
-			Dis = Infinity;
-			for(var j = 0; j < gates[i].Points.length; j++){
-				Dis = Math.min(Math.pow(gates[i].Points[j].X - x, 2) + Math.pow(gates[i].Points[j].Y - y, 2),Dis);
-			}
+			// Dis = Infinity;
+			// for(var j = 0; j < gates[i].Points.length; j++){
+			// 	Dis = Math.min(Math.pow(gates[i].Points[j].X - x, 2) + Math.pow(gates[i].Points[j].Y - y, 2),Dis);
+			// }
+			Dis = Math.pow(gates[i].BoundBox.cenX - x, 2) + Math.pow(gates[i].BoundBox.cenY - y, 2) - Math.pow(gates[i].Height/2,2);
 		}
 
 		if (Dis < minDis){
@@ -439,7 +452,7 @@ function check_wire(x, y, gates)
 			minDis = Dis;
 		}
    }
-	if(minDis < gates[0].Height * 0.2){
+	if(minDis < gates[0].Height * 0.25){
 		return true;
 	}
 		return false;

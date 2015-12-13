@@ -86,12 +86,14 @@ function Wire(points, gates)
 			Dis_end = Math.min(Math.pow(gates[i].Pin[2].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[2].Y - points[points.length - 1].Y, 2), Dis_end);
 		}
 		else{
-			Dis_start = Infinity;
-			Dis_end = Infinity;
-			for(var j = 0; j < gates[i].Points.length; j++){
-				Dis_start = Math.min(Math.pow(gates[i].Points[j].X - points[0].X, 2) + Math.pow(gates[i].Points[j].Y - points[0].Y, 2),Dis_start);
-				Dis_end = Math.min(Math.pow(gates[i].Points[j].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Points[j].Y - points[points.length - 1].Y, 2),Dis_end);
-			}
+			// Dis_start = Infinity;
+			// Dis_end = Infinity;
+			// for(var j = 0; j < gates[i].Points.length; j++){
+			// 	Dis_start = Math.min(Math.pow(gates[i].Points[j].X - points[0].X, 2) + Math.pow(gates[i].Points[j].Y - points[0].Y, 2),Dis_start);
+			// 	Dis_end = Math.min(Math.pow(gates[i].Points[j].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Points[j].Y - points[points.length - 1].Y, 2),Dis_end);
+			// }
+			Dis_start = Math.pow(gates[i].BoundBox.cenX - points[0].X, 2) + Math.pow(gates[i].BoundBox.cenY - points[0].Y, 2) - Math.pow(gates[i].Height/2,2);
+			Dis_end = Math.pow(gates[i].BoundBox.cenX - points[points.length - 1].X, 2) + Math.pow(gates[i].BoundBox.cenY - points[points.length - 1].Y, 2) - Math.pow(gates[i].Height/2,2);
 		}
 
 		if (Dis_start < minDis_start){
@@ -110,7 +112,7 @@ function Wire(points, gates)
 			}
 		}
 	}
-	if(minDis_start < gates[0].Height * 0.05 && minDis_end < gates[0].Height * 0.2){
+	if(minDis_start < gates[0].Height * 0.25 && minDis_end < gates[0].Height * 0.25){
 		this.isWire = true;
 	}
 }
