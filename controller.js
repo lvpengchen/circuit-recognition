@@ -356,18 +356,32 @@ function clearLastBeautifiedGate()
 		return;
 	}
   _gatesArray.length--;
-	onClickClearStrokes();
+	clearStrokes();
 	for (var i = 0; i < _gatesArray.length; i++)
 	{
 		drawGate(_gatesArray[i]);
 	}
 	drawText("Last Gate Cleared");
 }
-function onClickClearStrokes()
+function clearStrokes()
 {
 	_points.length = 0;
 	_check = 0;
 	_strokeID = 0;
+	_g.clearRect(0, 0, _rc.width, _rc.height);
+	drawText("Canvas cleared.");
+
+	//resotre the settings for canvas context
+	clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
+	_g.strokeStyle = clr;
+	_g.fillStyle = clr;
+}
+function clearAll()
+{
+	_points.length = 0;
+	_check = 0;
+	_strokeID = 0;
+	_gatesArray.length = 0;
 	_g.clearRect(0, 0, _rc.width, _rc.height);
 	drawText("Canvas cleared.");
 
