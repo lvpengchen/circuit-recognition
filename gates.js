@@ -86,16 +86,16 @@ function Wire(points, gates)
 		}
 
 		if (Dis_start < minDis_start){
-			this.startgate = _gates[i];
+			this.startgate = gates[i];
 			minDis_start = Dis_start;
 		}
 
 		if (Dis_end < minDis_end){
-			this.endgate = _gates[i];
+			this.endgate = gates[i];
 			minDis_end = Dis_end;
 		}
 	}
-	if(minDis_start < gates[0].Height * 0.05 && minDis_end < _gates[0].Height * 0.2){
+	if(minDis_start < gates[0].Height * 0.05 && minDis_end < gates[0].Height * 0.2){
 		this.isWire = true;
 	}
 }

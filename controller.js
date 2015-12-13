@@ -3,7 +3,7 @@ var noMatchScoreThreshold = -0.5;
 var waitTimeForNextStroke = 2000;//ms
 
 //global variables
-var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize, _gatesArray， _wireArray; // global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize, _gatesArray, _wireArray; // global variables
 //page instantiation
 function onLoadEvent()
 {
