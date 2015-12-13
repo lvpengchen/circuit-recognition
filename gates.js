@@ -21,7 +21,7 @@ function Gate(name, points){
 	};
 
 	this.Name = name;
-	this.Points = points;
+	this.Points = points.slice();
 	this.BoundBox = this.findBB();
 	this.Height = this.BoundBox.maxY - this.BoundBox.minY;
 	this.Width = Math.round(this.Height * 9.0 / 4.0);
@@ -63,7 +63,8 @@ function Wire(points, gates)
 {
 	var minDis_start = Infinity;
 	var minDis_end = Infinity;
-	this.isWire = false;
+	this.isinput = false;
+	this.isoutput = false;
 
 	for (var i = 0; i < gates.length; i++) {
 		var Dis_start;
@@ -75,27 +76,47 @@ function Wire(points, gates)
 			Dis_end = Math.min(Math.pow(gates[i].Pin[0].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[0].Y - points[points.length - 1].Y, 2),
 			Math.pow(gates[i].Pin[1].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[1].Y - points[points.length - 1].Y, 2));
 		}
-		else{
+		else if (gates[i].Name != "IO"){
 			Dis_start = Math.min(Math.pow(gates[i].Pin[0].X - points[0].X, 2) + Math.pow(gates[i].Pin[0].Y - points[0].Y, 2),
 			Math.pow(gates[i].Pin[1].X - points[0].X, 2) + Math.pow(gates[i].Pin[1].Y - points[0].Y, 2));
 			Dis_start = Math.min(Math.pow(gates[i].Pin[2].X - points[0].X, 2) + Math.pow(gates[i].Pin[2].Y - points[0].Y, 2), Dis_start);
 
 			Dis_end = Math.min(Math.pow(gates[i].Pin[0].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[0].Y - points[points.length - 1].Y, 2),
 			Math.pow(gates[i].Pin[1].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[1].Y - points[points.length - 1].Y, 2));
-			Dis_start = Math.min(Math.pow(gates[i].Pin[2].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[2].Y - points[points.length - 1].Y, 2), Dis_end);
+			Dis_end = Math.min(Math.pow(gates[i].Pin[2].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[2].Y - points[points.length - 1].Y, 2), Dis_end);
+		}
+		else{
+			Dis_start = Infinity;
+			Dis_end = Infinity;
+			for(var j = 0; j < gates[i].Points.length; j++){
+				Dis_start = Math.min(Math.pow(gates[i].Points[j].X - points[0].X, 2) + Math.pow(gates[i].Points[j].Y - points[0].Y, 2),Dis_start);
+				Dis_end = Math.min(Math.pow(gates[i].Points[j].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Points[j].Y - points[points.length - 1].Y, 2),Dis_end);
+			}
 		}
 
 		if (Dis_start < minDis_start){
-			this.startgate = gates[i];
+			this.startgate = i;
 			minDis_start = Dis_start;
+			if(gates[i].Name == "IO"){
+				this.isinput = true;
+			}
 		}
 
 		if (Dis_end < minDis_end){
-			this.endgate = gates[i];
+			this.endgate = i;
 			minDis_end = Dis_end;
+			if(gates[i].Name == "IO"){
+				this.isoutput = true;
+			}
 		}
 	}
 	if(minDis_start < gates[0].Height * 0.05 && minDis_end < gates[0].Height * 0.2){
 		this.isWire = true;
 	}
+}
+
+function IO(symbolName, symbolValue, wireIndex){
+	this.symbolName = symbolName;
+	this.symbolValue = symbolValue;
+	this.wireIndex = wireIndex;
 }

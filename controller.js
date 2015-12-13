@@ -3,7 +3,7 @@ var noMatchScoreThreshold = -0.5;
 var waitTimeForNextStroke = 2000;//ms
 
 //global variables
-var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize, _gatesArray, _wireArray; // global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize, _gatesArray, _wireArray, _inputArray, _outputArray, symbolIn, symbolOut, symbolIn_Index, symbolOut_Index; // global variables
 //page instantiation
 function onLoadEvent()
 {
@@ -14,8 +14,14 @@ function onLoadEvent()
 	_check_wire = 0;
 	_gatesArray = new Array();
 	_wireArray = new Array();
+	_inputArray = new Array();
+	_outputArray = new Array();
 	_r = new PDollarRecognizer();
 	_r1 = new PDollarRecognizer();
+	symbolIn = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+	symbolOut = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+	symbolIn_Index = 0;
+	symbolOut_Index = 25;
 	_r1.addGates(
 		new Array(
 			new PointCloud("AND", new Array(
@@ -189,10 +195,21 @@ function mouseUpEvent(x, y, button)
 			y -= _rc.y - getScrollY();
 			if ((_check_wire) && check_wire(x,y,_gatesArray))
 			{
+				
 				_points_single.length = 0;
 				_strokeID = 0;
 				drawText("is wire!");
 				_wireArray[_wireArray.length] = new Wire(_points, _gatesArray);
+				if(_wireArray[_wireArray.length - 1].isinput){
+					str = symbolIn[symbolIn_Index] + '<input type="text" class="form-control" id="input"></input>';
+					$('#forinput').append(str)
+					_inputArray[_inputArray.length] = new IO(symbolIn[symbolIn_Index++], 1, _wireArray.length - 1);
+				
+				}
+				if(_wireArray[_wireArray.length - 1].isoutput){
+					_outputArray[_outputArray.length] = new IO(symbolOut[symbolOut_Index--], 0, _wireArray.length - 1);
+			
+				}
 				_isDown = false;
 				return;
 			}
@@ -377,6 +394,7 @@ function clearStrokes()
 	clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
 	_g.strokeStyle = clr;
 	_g.fillStyle = clr;
+
 }
 function clearAll()
 {
@@ -391,6 +409,8 @@ function clearAll()
 	clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
 	_g.strokeStyle = clr;
 	_g.fillStyle = clr;
+	symbolIn_Index = 0;
+	symbolOut_Index = 25;
 }
 function check_wire(x, y, gates)
 {
@@ -402,14 +422,20 @@ function check_wire(x, y, gates)
 			Dis = Math.min(Math.pow(gates[i].Pin[0].X - x, 2) + Math.pow(gates[i].Pin[0].Y - y, 2),
 			Math.pow(gates[i].Pin[1].X - x, 2) + Math.pow(gates[i].Pin[1].Y - y, 2));
 		}
-		else{
+		else if (gates[i].Name != "IO"){
 			Dis = Math.min(Math.pow(gates[i].Pin[0].X - x, 2) + Math.pow(gates[i].Pin[0].Y - y, 2),
 			Math.pow(gates[i].Pin[1].X - x, 2) + Math.pow(gates[i].Pin[1].Y - y, 2));
 			Dis = Math.min(Math.pow(gates[i].Pin[2].X - x, 2) + Math.pow(gates[i].Pin[2].Y - y, 2), Dis);
 		}
+		else{
+			Dis = Infinity;
+			for(var j = 0; j < gates[i].Points.length; j++){
+				Dis = Math.min(Math.pow(gates[i].Points[j].X - x, 2) + Math.pow(gates[i].Points[j].Y - y, 2),Dis);
+			}
+		}
 
 		if (Dis < minDis){
-			this.startgate = gates[i];
+			//this.startgate = gates[i];
 			minDis = Dis;
 		}
    }
