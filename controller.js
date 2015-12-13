@@ -3,7 +3,7 @@ var noMatchScoreThreshold = -0.5;
 var waitTimeForNextStroke = 2000;//ms
 
 //global variables
-var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize,_gatesArray; // global variables
+var _isDown, _points, _points_single, _strokeID, _r, _r1, _r2, _check, _check_wire, _g, _rc, timerForRecognize, _gatesArray， _wireArray; // global variables
 //page instantiation
 function onLoadEvent()
 {
@@ -13,6 +13,7 @@ function onLoadEvent()
 	_check = 0;  //check if there is a line
 	_check_wire = 0;
 	_gatesArray = new Array();
+	_wireArray = new Array();
 	_r = new PDollarRecognizer();
 	_r1 = new PDollarRecognizer();
 	_r1.addGates(
@@ -191,6 +192,7 @@ function mouseUpEvent(x, y, button)
 				_points_single.length = 0;
 				_strokeID = 0;
 				drawText("is wire!");
+				_wireArray[_wireArray.length] = new Wire(_points, _gatesArray);
 				_isDown = false;
 				return;
 			}

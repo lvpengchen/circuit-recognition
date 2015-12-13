@@ -58,3 +58,44 @@ function Gate(name, points){
 
 
 }
+
+function Wire(points, gates)
+{
+	var minDis_start = Infinity;
+	var minDis_end = Infinity;
+	this.isWire = false;
+
+	for (var i = 0; i < gates.length; i++) {
+		var Dis_start;
+		var Dis_end;
+	    if (gates[i].Name == "NOT"){
+			Dis_start = Math.min(Math.pow(gates[i].Pin[0].X - points[0].X, 2) + Math.pow(gates[i].Pin[0].Y - points[0].Y, 2),
+			Math.pow(gates[i].Pin[1].X - points[0].X, 2) + Math.pow(gates[i].Pin[1].Y - points[0].Y, 2));
+
+			Dis_end = Math.min(Math.pow(gates[i].Pin[0].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[0].Y - points[points.length - 1].Y, 2),
+			Math.pow(gates[i].Pin[1].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[1].Y - points[points.length - 1].Y, 2));
+		}
+		else{
+			Dis_start = Math.min(Math.pow(gates[i].Pin[0].X - points[0].X, 2) + Math.pow(gates[i].Pin[0].Y - points[0].Y, 2),
+			Math.pow(gates[i].Pin[1].X - points[0].X, 2) + Math.pow(gates[i].Pin[1].Y - points[0].Y, 2));
+			Dis_start = Math.min(Math.pow(gates[i].Pin[2].X - points[0].X, 2) + Math.pow(gates[i].Pin[2].Y - points[0].Y, 2), Dis_start);
+
+			Dis_end = Math.min(Math.pow(gates[i].Pin[0].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[0].Y - points[points.length - 1].Y, 2),
+			Math.pow(gates[i].Pin[1].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[1].Y - points[points.length - 1].Y, 2));
+			Dis_start = Math.min(Math.pow(gates[i].Pin[2].X - points[points.length - 1].X, 2) + Math.pow(gates[i].Pin[2].Y - points[points.length - 1].Y, 2), Dis_end);
+		}
+
+		if (Dis_start < minDis_start){
+			this.startgate = _gates[i];
+			minDis_start = Dis_start;
+		}
+
+		if (Dis_end < minDis_end){
+			this.endgate = _gates[i];
+			minDis_end = Dis_end;
+		}
+	}
+	if(minDis_start < gates[0].Height * 0.05 && minDis_end < _gates[0].Height * 0.2){
+		this.isWire = true;
+	}
+}
