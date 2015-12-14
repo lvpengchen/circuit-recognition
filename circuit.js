@@ -68,12 +68,11 @@ function Circuit(gateArray, wireArray, inputArray, outputArray)
   //finds all output symbols and recursively call this.calc to compute all outputs.
   this.calcAll = function()
   {
+    var resultArray = new Array();
     for (var i = 0; i < this._outputArray.length; i++)
     {
-      this._outputArray[i].symbolValue = calc(this._outputArray[i].wireIndex);
+      resultArray[resultArray.length] = new IO(this._outputArray[i].symbolName,calc(this._outputArray[i].wireIndex),this._outputArray[i].wireIndex);
     }
-    console.log(this._outputArray);
-    return this._outputArray;
+    return resultArray;
   }
-
 }

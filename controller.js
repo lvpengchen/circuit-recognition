@@ -204,12 +204,15 @@ function mouseUpEvent(x, y, button)
 				if(_wireArray[_wireArray.length - 1].isinput){
 					str = "<div class='div" + symbolIn[symbolIn_Index] + "'>" + symbolIn[symbolIn_Index] + "<input type='text' class='form-control' id='" + symbolIn[symbolIn_Index] + "' ></input></div>";
 					$('#forinput').append(str)
+					drawsymbol(symbolIn[symbolIn_Index], _gatesArray[_wireArray[_wireArray.length - 1].startgate]);
 					_inputArray[_inputArray.length] = new IO(symbolIn[symbolIn_Index++], true, _wireArray.length - 1);
+
 
 				}
 				if(_wireArray[_wireArray.length - 1].isoutput){
 					str2 = "<div class='div" + symbolOut[symbolOut_Index] + "'>" + symbolOut[symbolOut_Index] + "<input type='text' class='form-control' id='" + symbolOut[symbolOut_Index] + "' ></input></div>";
 					$('#foroutput').append(str2)
+					drawsymbol(symbolOut[symbolOut_Index], _gatesArray[_wireArray[_wireArray.length - 1].endgate]);
 					_outputArray[_outputArray.length] = new IO(symbolOut[symbolOut_Index--], true, _wireArray.length - 1);
 
 				}
@@ -377,10 +380,17 @@ function drawConnectedPoint(from, to)
 }
 function drawText(str)
 {
+	_g.font = "15px Georgia"
 	_g.fillStyle = "rgb(255,255,136)";
 	_g.fillRect(0, 0, _rc.width, 20);
 	_g.fillStyle = "rgb(0,0,255)";
 	_g.fillText(str, 1, 14);
+}
+function drawsymbol(str, gate)
+{
+	_g.font = (gate.Height*0.5).toString()+"px Georgia";
+	_g.fillStyle = "rgb(255,255,255)";
+	_g.fillText(str, gate.BoundBox.cenX-gate.Height*0.15, gate.BoundBox.cenY+gate.Height*0.15);
 }
 //
 // Multistroke Adding and Clearing
@@ -461,7 +471,7 @@ function onClearAll()
 	for(var i = symbolOut_Index; i <= 25; i++){
 		$(".div" + symbolOut[i] + "").remove();
 	}
-
+	document.getElementById("feedback").innerText = '';
 	symbolIn_Index = 0;
 	symbolOut_Index = 25;
 	
@@ -474,7 +484,6 @@ function onSubmit()
 	for(var i = symbolOut_Index+1; i <= 25; i++){
 		getOutputValue(symbolOut[i]);
 	}
-
 	cir = Circuit(_gatesArray, _wireArray, _inputArray, _outputArray);
 	var outputresult = this.calcAll();
 	var feedback = document.getElementById("feedback");
@@ -483,7 +492,7 @@ function onSubmit()
 		if(outputresult[i].symbolValue != _outputArray[i].symbolValue)
 		{ 
 		 	//output the values that are incorrect
-		 	feedback.innerText = feedback.innerText + outputresult[i].symbolName + "is not correct";
+		 	feedback.innerText = feedback.innerText + outputresult[i].symbolName + " is not correct. ";
 
 		 	incorrectCount++;
 		}
