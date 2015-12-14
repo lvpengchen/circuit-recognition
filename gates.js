@@ -102,6 +102,9 @@ function Wire(points, gates)
 			if(gates[i].Name == "IO"){
 				this.isinput = true;
 			}
+			else{
+				this.isinput = false;
+			}
 		}
 
 		if (Dis_end < minDis_end){
@@ -109,6 +112,9 @@ function Wire(points, gates)
 			minDis_end = Dis_end;
 			if(gates[i].Name == "IO"){
 				this.isoutput = true;
+			}
+			else{
+				this.isoutput = false;
 			}
 		}
 	}
