@@ -452,8 +452,10 @@ function onClearAll()
 {
 	_points.length = 0;
 	_check = 0;
+	_check_wire = 0;
 	_strokeID = 0;
 	_gatesArray.length = 0;
+	_wireArray.length = 0;
 	_inputArray.length = 0;
 	_outputArray.length = 0;
 	//clear input boxes
@@ -503,6 +505,7 @@ function onSubmit()
 		//output "all correct"
 		feedback.innerText = "You are correct!";
 	}
+	_check_wire = 0;
 }
 function check_wire(x, y, gates)
 {
