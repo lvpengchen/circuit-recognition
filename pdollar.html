@@ -25,16 +25,9 @@
 	    </div>
 	    <div>
 	      <ul class="nav navbar-nav navbar-right">
-	        <li> <a href="#">Demo</a></li>
-	        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Tool <span class="caret"	></span></a>
-	          <ul class="dropdown-menu">
-	            <li><a href="#">Tool 1</a></li>
-	            <li><a href="#">Tool 2</a></li>
-	            <li><a href="#">Tool 3</a></li>
-	          </ul>
-	        </li>
-	        <li><a href="#">Eraser</a></li>
-	        <li><a href="#">Color</a></li>
+	        <li> <a onclick="onClearLastBeautifiedGate()">Erase Last</a></li>
+	        <li> <a onclick="onSubmit()">Submit</a></li>
+	        <li> <a onclick="onClearAll()">Clear</a></li>
 	      </ul>
 	    </div>
 	  </div>
@@ -44,34 +37,35 @@
 
 
 		<div class="row">
-			<div class="col-sm-3" id="forinput"></div>
+			<div class="col-sm-2"></div>
 			<div class="col-sm-7">
-			<canvas id="myCanvas" width="600" height="400" margin="0 auto" style="background-color:#000000"
+			<canvas id="myCanvas" width="800" height="400" margin="0 auto" style="background-color:#000000"
 				onmousedown="mouseDownEvent(event.clientX, event.clientY, event.button)"
 				onmousemove="mouseMoveEvent(event.clientX, event.clientY, event.button)"
 				onmouseup="mouseUpEvent(event.clientX, event.clientY, event.button)"
 				oncontextmenu="return false;">
 			<span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by thisbrowser.</span>
 			</canvas>
+			<div class="row">
+				<div class="col-sm-6" id="forinput">
+					<label>Input:</label></br>
+				</div>
+				<div class="col-sm-6" id="foroutput">
+					<label>Output:</label></br>
+				</div>
 			</div>
-			<div class="col-sm-1 btn-group-vertical">
-				<button type="button" class="btn btn-warning" value="Clear" onclick="onClearAll()">Clear</button>
-				<button type="button" class="btn btn-primary" value="Submit" onclick="onSubmit()">Submit</button>
-				<!-- <button type="button" class="btn btn-primary">Tool</button> -->
-				<button type="button" class="btn btn-danger" value = "Erase" onclick="onClearLastBeautifiedGate()">Erase Last</button>
-				<button type="button" class="btn btn-info">Color</button>
 			</div>
 		</div>
+
 		<div class="row">
 			<div class="col-sm-2"></div>
 			<div class="col-sm-8">
  				<form role="form">
  				   <div class="form-group">
  				     <label for="comment">Feedback:</label>
- 				     <textarea class="form-control" rows="2" id="feedback"></textarea>
+ 				     <textarea class="form-control" rows="1" id="feedback" value=""></textarea>
  				 </br>
  				   </div>
- 				   <input type="submit" class="btn btn-success" value="Submit">
  				</form>
 			</div>
 			<div class="col-sm-2"></div>

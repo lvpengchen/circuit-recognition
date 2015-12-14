@@ -10,7 +10,7 @@ function Circuit(gateArray, wireArray, inputArray, outputArray)
   this._gateArray = gateArray;
   this._wireArray = wireArray;
   this._inputArray = inputArray;
-  this._outputArray = outputArray;
+  this._outputArray = outputArray.slice();
 
   this.findOutputWireIndex = function(wireIndex)
   {

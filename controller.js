@@ -202,12 +202,14 @@ function mouseUpEvent(x, y, button)
 				drawText("is wire!");
 				_wireArray[_wireArray.length] = new Wire(_points, _gatesArray);
 				if(_wireArray[_wireArray.length - 1].isinput){
-					str = symbolIn[symbolIn_Index] + '<input type="text" class="form-control" id="input"></input>';
+					str = "<div class='div" + symbolIn[symbolIn_Index] + "'>" + symbolIn[symbolIn_Index] + "<input type='text' class='form-control' id='" + symbolIn[symbolIn_Index] + "' ></input></div>";
 					$('#forinput').append(str)
 					_inputArray[_inputArray.length] = new IO(symbolIn[symbolIn_Index++], true, _wireArray.length - 1);
 
 				}
 				if(_wireArray[_wireArray.length - 1].isoutput){
+					str2 = "<div class='div" + symbolOut[symbolOut_Index] + "'>" + symbolOut[symbolOut_Index] + "<input type='text' class='form-control' id='" + symbolOut[symbolOut_Index] + "' ></input></div>";
+					$('#foroutput').append(str2)
 					_outputArray[_outputArray.length] = new IO(symbolOut[symbolOut_Index--], true, _wireArray.length - 1);
 
 				}
@@ -237,6 +239,42 @@ function mouseUpEvent(x, y, button)
 		recognize(_points);
 	}
 	_points_single.length = 0;
+}
+
+function getInputValue(id)
+{
+	var value = document.getElementById(id).value;
+	for(var i =0; i < _inputArray.length; i++){
+		if(_inputArray[i].symbolName == id){
+			if(value == '1'){
+				_inputArray[i].symbolValue = true;
+			}
+			else{
+				_inputArray[i].symbolValue = false;
+			}
+			
+			break;
+		}
+	}
+
+}
+
+function getOutputValue(id)
+{
+	var value = document.getElementById(id).value;
+	for(var i =0; i < _outputArray.length; i++){
+		if(_outputArray[i].symbolName == id){
+			if(value == '1'){
+				_outputArray[i].symbolValue = true;
+			}
+			else{
+				_outputArray[i].symbolValue = false;
+			}
+			
+			break;
+		}
+	}
+
 }
 
 
@@ -416,13 +454,46 @@ function onClearAll()
 	clr = "rgb(" + 255 + "," + 255 + "," + 255 + ")";
 	_g.strokeStyle = clr;
 	_g.fillStyle = clr;
+	
+	for(var i = symbolIn_Index-1; i >= 0; i--){
+		$(".div" + symbolIn[i] + "").remove();
+	}
+	for(var i = symbolOut_Index; i <= 25; i++){
+		$(".div" + symbolOut[i] + "").remove();
+	}
+
 	symbolIn_Index = 0;
 	symbolOut_Index = 25;
+	
 }
 function onSubmit()
 {
+	for(var i = symbolIn_Index-1; i >= 0; i--){
+		getInputValue(symbolIn[i]);
+	}
+	for(var i = symbolOut_Index+1; i <= 25; i++){
+		getOutputValue(symbolOut[i]);
+	}
+
 	cir = Circuit(_gatesArray, _wireArray, _inputArray, _outputArray);
-	this.calcAll();
+	var outputresult = this.calcAll();
+	var feedback = document.getElementById("feedback");
+	var incorrectCount = 0;
+	for(var i = 0; i < outputresult.length; i++){
+		if(outputresult[i].symbolValue != _outputArray[i].symbolValue)
+		{ 
+		 	//output the values that are incorrect
+		 	feedback.innerText = feedback.innerText + outputresult[i].symbolName + "is not correct";
+
+		 	incorrectCount++;
+		}
+	}
+
+	if(incorrectCount == 0)
+	{
+		//output "all correct"
+		feedback.innerText = "You are correct!";
+	}
 }
 function check_wire(x, y, gates)
 {
